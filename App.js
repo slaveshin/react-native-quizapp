@@ -21,23 +21,25 @@ export default function App() {
   const moveUp = () => {
     Animated.timing(Y_POSITION, {
       toValue: up ? 300 : -300,
-      useNativeDriver: true, // 브리지를 통과 할 필요없음
+      useNativeDriver: false, // 브리지를 통과 할 필요없음
       easing: Easing.cubic,
       duration: 3000,
     }).start(toggleUp);
   };
-  const opacity = Y_POSITION.interpolate({
-    inputRange: [-300, 0, 300],
-    outputRange: [1, 0.5, 1],
+  const rotation = Y_POSITION.interpolate({
+    inputRange: [-300, 300],
+    outputRange: ["-360deg", "360deg"],
   });
   const borderRadius = Y_POSITION.interpolate({
     inputRange: [-300, 300],
     outputRange: [100, 0],
   });
+  const bgColor = Y_POSITION.interpolate({
+    inputRange: [-300, 300],
+    outputRange: ["rgb(255, 99, 71)", "rgb(71, 166, 255)"],
+  });
   Y_POSITION.addListener(() => {
-    console.log("Y VALUE:", Y_POSITION);
-    console.log("opacity VALUE:", opacity);
-    console.log("borderRadius VALUE:", borderRadius);
+    console.log("rotation VALUE:", rotation);
   });
   return (
     <Container>
@@ -45,8 +47,8 @@ export default function App() {
         <AnimatedBox
           style={{
             borderRadius,
-            opacity,
-            transform: [{ translateY: Y_POSITION }],
+            backgroundColor: bgColor,
+            transform: [{ rotateY: rotation }, { translateY: Y_POSITION }],
           }}
         />
       </Pressable>
